@@ -22,7 +22,7 @@ builder.Services.AddDbContext<DataContext>(
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
     {
-        var configuration = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"), true);
+        var configuration = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis")!, true);
         return ConnectionMultiplexer.Connect(configuration);
     });
 
@@ -51,11 +51,14 @@ if (app.Environment.IsDevelopment())
 }
 
 // app.UseHttpsRedirection();
-app.UseCors("CorsPolicy");
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
+app.UseCors("CorsPolicy");
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapFallbackToController("Index", "Fallback");
 
 // Creating Scope for automated DB creation ======================
 using var scope = app.Services.CreateScope();

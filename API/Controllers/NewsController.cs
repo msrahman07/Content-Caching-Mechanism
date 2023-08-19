@@ -63,7 +63,7 @@ namespace API.Controllers
             var recentlyViewedNewsJson = await _cacheDb.SortedSetRangeByRankAsync("recently_viewed_news", 0, -1, Order.Descending);
 
             // Convert the JSON strings back to News objects
-            var recentlyViewedNews = recentlyViewedNewsJson.Select(newsJson => JsonConvert.DeserializeObject<News>(newsJson)).ToList();
+            var recentlyViewedNews = recentlyViewedNewsJson.Select(newsJson => JsonConvert.DeserializeObject<News>(newsJson!)).ToList();
 
             return Ok(recentlyViewedNews);
         }
@@ -76,7 +76,7 @@ namespace API.Controllers
             var popularNewsJson = await _cacheDb.SortedSetRangeByRankAsync("popular_news", 0, 4, Order.Descending);
 
             // Convert the JSON strings back to News objects
-            var popularNews = popularNewsJson.Select(newsJson => JsonConvert.DeserializeObject<News>(newsJson)).ToList();
+            var popularNews = popularNewsJson.Select(newsJson => JsonConvert.DeserializeObject<News>(newsJson!)).ToList();
 
             return Ok(popularNews);
         }
