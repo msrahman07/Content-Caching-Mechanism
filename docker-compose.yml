@@ -1,19 +1,32 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
 services:
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+
   db:
     image: mysql
-    # command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      MYSQL_DATABASE: 'content_caching_mech'
-      MYSQL_USER: 'appuser'
+      MYSQL_DATABASE: 'ContentCachingMech'
       MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: password
     ports:
       - '3306:3306'
     expose:
       - '3306'
-    volumes:
-      - my-db:/var/lib/mysql
 
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+  
 volumes:
-  my-db:
+  redis-data:

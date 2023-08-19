@@ -1,0 +1,32 @@
+Add Connection String =>
+"Server=localhost;Port=3306;Database=ContentCachingMech;Uid=root;Pwd=password"
+
+Packages to install =>
+dotnet add package Microsoft.EntityFrameworkCore.Design
+dotnet add package Pomelo.EntityFrameworkCore.MySql
+
+Install & Update dotnet EF tool =>
+dotnet tool install --global dotnet-ef
+dotnet tool update --global dotnet-ef
+
+Scaffold MySQL Database =>
+dotnet ef dbcontext scaffold Name=ContentCachingMechDB Pomelo.EntityFrameworkCore.MySql --output-dir Models --context-dir Data --namespace API.Models --context-namespace API.Data --context DataContext -f --no-onconfiguring
+
+
+Add Builder service to Program.cs
+builder.Services.AddDbContext<DataContext>(
+    options =>
+    {
+        options.UseMySql(builder.Configuration.GetConnectionString("ContentCachingMechDB"),
+        Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.1.0-mysql"));
+    }
+);
+==============================================================================================
+
+Controller Code Generator
+
+// dotnet aspnet-codegenerator controller -name NewsController -m News -dc API.Data.DataContext --relativeFolderPath Controllers --referenceScriptLibraries --databaseProvider mysql
+dotnet aspnet-codegenerator controller -name NewsController -async -api -m News -dc API.Data.DataContext -outDir Controllers
+
+
+
